@@ -1,4 +1,6 @@
 *.o
+*.class
+*.log
 /jhyphen.java
 /jhyphenJNI.java
 /jhyphen_wrap.c
