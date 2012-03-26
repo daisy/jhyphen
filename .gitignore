@@ -1,1 +1,5 @@
+*.o
+/jhyphen.java
+/jhyphenJNI.java
+/jhyphen_wrap.c
 /libjhyphen.so
