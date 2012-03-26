@@ -11,16 +11,18 @@ sudo make install
 
 swig -java jhyphen.i
 
-gcc -c jhyphen.c jhyphen_wrap.c /usr/local/lib/libhyphen.so \
+gcc -c jhyphen.c jhyphen_wrap.c \
     -I/usr/local/include \
     -I/usr/lib/jvm/java-6-openjdk/include \
     -fPIC
 
 gcc -shared jhyphen.o jhyphen_wrap.o \
+    -lhyphen \
+    -L/usr/local/lib \
     -o libjhyphen.so
 
 
 # Test:
 
 javac Main.java
-java -Djava.library.path=. Main
+java -Djava.library.path=/home/frees/dev/jhyphen:/usr/local/lib Main

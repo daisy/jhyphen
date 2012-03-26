@@ -8,8 +8,8 @@
 
 
 public class jhyphen {
-  public static int doSomething() {
-    return jhyphenJNI.doSomething();
+  public static int doSomething(String fn, String word) {
+    return jhyphenJNI.doSomething(fn, word);
   }
 
 }

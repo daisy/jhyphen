@@ -8,5 +8,5 @@
 
 
 class jhyphenJNI {
-  public final static native int doSomething();
+  public final static native int doSomething(String jarg1, String jarg2);
 }
