@@ -42,7 +42,7 @@ public class Hyphenator {
 		if (charset == null) {
 			throw new NullPointerException();
 		}
-		dict = JHyphen.getDictionary(dictPath);
+		dict = JHyphen.hnj_hyphen_load(dictPath);
 		this.charset = charset;
 	}
   
@@ -91,6 +91,13 @@ public class Hyphenator {
 			hyphens[i++] = (c & 1) > 0;
 		}
 		return hyphens;
+	}
+	
+	/**
+	 * Free memory
+	 */
+	public void close() {
+		JHyphen.hnj_hyphen_free(dict);
 	}
 
 	/**

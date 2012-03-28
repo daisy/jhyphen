@@ -35,5 +35,7 @@ public class Main {
      
      System.out.println(hyphenatedWord.toString());
      
+     hyphenator.close();
+     
    }
  }

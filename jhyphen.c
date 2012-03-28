@@ -8,14 +8,7 @@
 #define MAX_WORD 512
 #define BUFSIZE 1000
 
-HyphenDict* getDictionary(char* fn) {
-
-    // TODO: check if dict is actually found
-
-    return hnj_hyphen_load(fn);
-
-}
-
+// TODO: check for memory leaks
 // word should be in lower case and can not have trailing (or leading?) periods
 char* getHyphens(HyphenDict* dict, const char word[], int len) {
 

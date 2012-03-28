@@ -12,13 +12,16 @@ $2 = (int)    JCALL1(GetArrayLength,       jenv, $input);
 %typemap(javain) (char * BYTE, int LENGTH) "$javainput"
 
 %apply (char * BYTE, int LENGTH) { (const char word[], int len) };
+%apply int * OUTPUT { int* hyphens };
 
 %{
 #include <hyphen.h>
-extern HyphenDict* getDictionary(char* fn);
+extern HyphenDict* hnj_hyphen_load (const char* fn);
+extern void hnj_hyphen_free (HyphenDict* dict);
 extern char* getHyphens(HyphenDict* dict, const char word[], int len);
 %}
 
-extern HyphenDict* getDictionary(char* fn);
+extern HyphenDict* hnj_hyphen_load (const char* fn);
+extern void hnj_hyphen_free (HyphenDict* dict);
 extern char* getHyphens(HyphenDict* dict, const char word[], int len);
 
