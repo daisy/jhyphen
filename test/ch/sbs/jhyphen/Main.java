@@ -1,5 +1,6 @@
 package ch.sbs.jhyphen;
 
+import java.io.FileNotFoundException;
 import java.lang.StringBuffer;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
@@ -16,10 +17,10 @@ public class Main {
    //private static final String[] words = new String[]{"stoomboot", "omaatje", "reëel"};
    //private static final String[] words = new String[]{"Dampfschiff", "Zucker", "Schiffahrt"};
 
-   private static final Hyphenator hyphenator = new Hyphenator(DICT, Charset.forName("ISO-8859-1"));
-
-   public static void main(String argv[]) {
+   public static void main(String argv[]) throws FileNotFoundException {
      
+	 Hyphenator hyphenator = new Hyphenator(DICT, Charset.forName("ISO-8859-1"));
+	   
 	 boolean[] hyphens = hyphenator.hyphenate(text);
 
      StringBuffer hyphenatedWord = new StringBuffer();
