@@ -50,8 +50,8 @@ public class Hyphenator {
 	 * Returns all possible hyphenation points of a string
 	 * @param text The string to be hyphenated
 	 * @return An array of booleans which represents the hyphenation points.
-	 * The hyphen array has the same length as the input string, and a
-	 * hyphen at index i corresponds to characters i and i+1 of the string.
+	 * The length of the hyphen array is the length of the input string minus 1.
+	 * A hyphen at index i corresponds to characters i and i+1 of the string.
 	 */
 	public boolean[] hyphenate(String text) {
 		
@@ -82,7 +82,9 @@ public class Hyphenator {
 			hyphenBuffer.append('0');
 		}
 		
-		// TODO assert that hyphenBuffer.length() == text.length();
+		hyphenBuffer.deleteCharAt(pos);
+		
+		// TODO assert that hyphenBuffer.length() == text.length() -1 ;
 		
 		boolean[] hyphens = new boolean[text.length()];
 		CharacterIterator iter = new StringCharacterIterator(hyphenBuffer.toString());
