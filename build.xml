@@ -19,6 +19,15 @@
 
         <javac srcdir="java" destdir="build" includeantruntime="false"
                debug="true" encoding="UTF-8" source="1.6" target="1.6"/>
+        
+        <copy todir="build">
+            <fileset dir="java">
+                <patternset>
+                    <include name="**/*.properties"/>
+                    <exclude name="**/*.java"/>
+                </patternset>
+            </fileset>
+        </copy>
 
     	<jar destfile="dist/jhyphen.jar">
             <fileset dir="build"/>
