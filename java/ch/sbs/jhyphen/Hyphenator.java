@@ -74,7 +74,7 @@ public class Hyphenator {
 	
 	/**
 	 * Constructor which looks up the correct dictionary file based on the given locale
-	 * @param locale
+	 * @param locale The locale
 	 * @throws FileNotFoundException when no dictionary file found for the locale.
 	 * @throws UnsupportedCharsetException
 	 */
@@ -92,7 +92,28 @@ public class Hyphenator {
 		charset = getCharset(dictionaryFile);
 		dictionary = JHyphen.hnj_hyphen_load(dictionaryFile.getAbsolutePath());
 	}
-  
+
+	/**
+	 * Returns the fully hyphenated string.
+	 * The given hyphen is inserted at all possible hyphenation points.
+	 * @param text The string to be hyphenated
+	 * @param hyphen The character to be used as hyphenation mark
+	 * @return
+	 */
+	public String hyphenate(String text, char hyphen) {
+		boolean[] hyphens = hyphenate(text);
+		StringBuffer hyphenatedText = new StringBuffer();
+		int i;
+		for (i=0; i<hyphens.length; i++) {
+			hyphenatedText.append(text.charAt(i));
+			if (hyphens[i]) {
+				hyphenatedText.append(hyphen);
+			}
+		}
+		hyphenatedText.append(text.charAt(i));
+		return hyphenatedText.toString();
+	}
+	
 	/**
 	 * Returns all possible hyphenation points of a string
 	 * @param text The string to be hyphenated
