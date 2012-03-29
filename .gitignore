@@ -2,7 +2,9 @@
 *.log
 *.o
 *~
-/jhyphen.java
-/jhyphenJNI.java
-/jhyphen_wrap.c
-/libjhyphen.so
+bin
+build
+dist
+java/ch/sbs/jhyphen/swig/*.java
+jhyphen_wrap.c
+libjhyphen.so

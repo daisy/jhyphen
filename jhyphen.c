@@ -5,40 +5,45 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#define MAX_WORD 256
+#define MAX_WORD 512
+#define BUFSIZE 1000
 
-int doSomething(const char* fn, const char* word) {
+// TODO: check for memory leaks
+// word should be in lower case and can not have trailing (or leading?) periods
+char* getHyphens(HyphenDict* dict, const char word[], int len) {
 
-  HyphenDict* dict;
-  char lcword[MAX_WORD];
-  char hyphword[MAX_WORD];
-  char hyphens[MAX_WORD];
-  int word_size;
-  int i;
-  int j;
+    char* lcword;
+    char* hyphens;
+    char* hyphword;
+    int i;
+    int j;
+    char** rep;
+    int* pos;
+    int* cut;
 
-  dict = hnj_hyphen_load(fn);
+    hyphens = (char*)malloc(len * sizeof(char));
+    hyphword = (char*)malloc(2 * len * sizeof(char));
+    
+    rep = NULL;
+    pos = NULL;
+    cut = NULL;
+    hyphword[0] = '\0';
 
-  word_size = strlen(word);
+    hnj_hyphen_hyphenate2(dict, word, len, hyphens, hyphword, &rep, &pos, &cut);
 
-  for (i = 0; i < word_size; ++i) {
-    lcword[i] = tolower(word[i]);
-  }
-  lcword[i] = '\0';
-  
-  hnj_hyphen_hyphenate(dict, lcword, word_size, hyphens);
+    free(hyphword);
 
-  j = 0;
-  for (i = 0; i < word_size; i++) {
-    hyphword[j++] = word[i];
-    if (hyphens[i]&1) {
-      hyphword[j++] = '-';
+    // TODO: if (rep[i]): hyphenation mark at hyphens[i] is not valid because replacements have to be done 
+
+    if (rep) {
+        for (i = 0; i < len; i++) {
+          if (rep[i]) free(rep[i]);
+        }
+        free(rep);
+        free(pos);
+        free(cut);
     }
-  }
-  hyphword[j] = '\0';
 
-  fprintf(stdout,"%s\n", hyphword);
-  fflush(stdout);
+    return hyphens;
 
-  return 1;
 }
