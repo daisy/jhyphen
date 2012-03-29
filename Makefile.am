@@ -6,5 +6,6 @@ lib_LTLIBRARIES = libjhyphen.la
 libjhyphen_la_SOURCES = jhyphen.c jhyphen_wrap.c
 
 jhyphen_wrap.c: jhyphen.i jhyphen.c
-	$(SWIG) -java $<
+	$(SWIG) -java -package ch.sbs.jhyphen.swig -outdir java/ch/sbs/jhyphen/swig $<
 
+CLEANFILES = jhyphen_wrap.c
