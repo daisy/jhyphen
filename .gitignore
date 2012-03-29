@@ -28,6 +28,5 @@ Makefile.in
 bin
 build
 dist
-java/ch/sbs/jhyphen/swig/*.java
 jhyphen_wrap.c
 libjhyphen.so
