@@ -10,6 +10,7 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 AC_CHECK_PROG([SWIG], [swig], [swig])
+AC_CHECK_PROG([ANT], [ant], [ant])
 
 # make sure the hyphens library is around
 AC_CHECK_LIB([hyphen],[hnj_hyphen_hyphenate2])
