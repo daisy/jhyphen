@@ -2,6 +2,8 @@ package ch.sbs.jhyphen;
 
 import ch.sbs.jhyphen.swig.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.File;
@@ -13,7 +15,6 @@ import java.text.StringCharacterIterator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,11 +59,11 @@ public class Hyphenator {
 	 * Default constructor
 	 * @param dictPath The path to the hyphenation dictionary file,
 	 * 		e.g. /usr/share/hyphen/hyph_de_DE.dic
-	 * @throws FileNotFoundException when the dictionary file is not found.
+	 * @throws IOException when the dictionary file is not found.
 	 * @throws UnsupportedCharsetException
 	 */
 	public Hyphenator(File dictionaryFile)
-			throws FileNotFoundException, UnsupportedCharsetException {
+			throws IOException, UnsupportedCharsetException {
 		
 		if (!dictionaryFile.exists()) {
 			throw new FileNotFoundException("Dictionary file at " + 
@@ -75,11 +76,11 @@ public class Hyphenator {
 	/**
 	 * Constructor which looks up the correct dictionary file based on the given locale
 	 * @param locale The locale
-	 * @throws FileNotFoundException when no dictionary file found for the locale.
+	 * @throws IOException when no dictionary file found for the locale.
 	 * @throws UnsupportedCharsetException
 	 */
 	public Hyphenator(String locale)
-			throws FileNotFoundException, UnsupportedCharsetException {
+			throws IOException, UnsupportedCharsetException {
 		
 		File dictionaryFile = null;
 		String dictionaryPath = dictionaryPaths.getProperty(locale);
@@ -186,18 +187,22 @@ public class Hyphenator {
 	 * @throws UnsupportedCharsetException
 	 */
 	private static Charset getCharset(File dictionaryFile)
-			throws FileNotFoundException, UnsupportedCharsetException {
+			throws UnsupportedCharsetException, IOException {
 		
 		Charset cs = charsets.get(dictionaryFile);
 		if (cs == null) {
-			// read first line of dictionary file
-			Scanner scanner = new Scanner(dictionaryFile);
-            String charsetName = scanner.nextLine();
-            // remove whitespace
-            charsetName = charsetName.replaceAll("\\s+", "");
-            scanner.close();
-			cs = Charset.forName(charsetName);
-			charsets.put(dictionaryFile, cs);
+			BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new FileReader(dictionaryFile));
+            	String charsetName = reader.readLine();
+                charsetName = charsetName.replaceAll("\\s+", "");
+    			cs = Charset.forName(charsetName);
+    			charsets.put(dictionaryFile, cs);
+			} finally {
+	            if (reader != null) {
+	            	reader.close();
+	            }
+            }
 		}
 		return cs;
 	}

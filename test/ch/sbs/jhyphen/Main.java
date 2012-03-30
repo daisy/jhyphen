@@ -1,16 +1,16 @@
 package ch.sbs.jhyphen;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Main {
 
-   private static final String text = " Steamboat  supercalifragilisticexpialidocious. eighteen";
+   //private static final String text = " Steamboat  supercalifragilisticexpialidocious. eighteen";
    //private static final String text = "stoomboot, omaatje, reëel";
-   //private static final String text = "Dampfschiff, Zucker, Schiffahrt";
+   private static final String text = "Dampfschiff, Zucker, Schiffahrt";
 
-   public static void main(String argv[]) throws FileNotFoundException {
+   public static void main(String argv[]) throws IOException {
      
-	 Hyphenator hyphenator = new Hyphenator("en_US");
+	 Hyphenator hyphenator = new Hyphenator("de");
 	   
 	 String hyphenatedWord = hyphenator.hyphenate(text, '-');
      
