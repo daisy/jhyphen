@@ -10,10 +10,13 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 AC_CHECK_PROG([SWIG], [swig], [swig])
+test -z "$SWIG" && AC_MSG_ERROR([swig not found, please install it])
+
 AC_CHECK_PROG([ANT], [ant], [ant])
+test -z "$ANT" && AC_MSG_ERROR([ant not found, please install it])
 
 # make sure the hyphens library is around
-AC_CHECK_LIB([hyphen],[hnj_hyphen_hyphenate2])
+AC_CHECK_LIB([hyphen],[hnj_hyphen_hyphenate2],,[AC_MSG_ERROR([libhyphen not found, please install it])])
 
 AC_CONFIG_FILES([
  Makefile
