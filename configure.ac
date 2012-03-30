@@ -5,6 +5,8 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_CC
 AC_CONFIG_HEADERS([config.h])
 
+AC_FUNC_MALLOC
+AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 AC_CHECK_PROG([SWIG], [swig], [swig])
