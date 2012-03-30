@@ -4,7 +4,7 @@
 *~
 /.deps
 /.libs
-/Makefile
+Makefile
 /aclocal.m4
 /autom4te.cache
 /config.guess
@@ -13,6 +13,7 @@
 /config.status
 /config.sub
 /configure
+/configure.scan
 /depcomp
 /install-sh
 /jhyphen-*.tar.gz
