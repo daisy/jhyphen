@@ -1,5 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
 
+SUBDIRS = java
+EXTRA_DIST = build.xml
+
 AM_CPPFLAGS = -I /usr/lib/jvm/java-6-openjdk/include
 
 lib_LTLIBRARIES = libjhyphen.la

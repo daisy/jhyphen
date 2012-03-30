@@ -16,5 +16,10 @@ AC_CHECK_LIB([hyphen],[hnj_hyphen_hyphenate2])
 
 AC_CONFIG_FILES([
  Makefile
+ java/Makefile
+ java/ch/Makefile
+ java/ch/sbs/Makefile
+ java/ch/sbs/jhyphen/Makefile
+ java/ch/sbs/jhyphen/swig/Makefile
 ])
 AC_OUTPUT
