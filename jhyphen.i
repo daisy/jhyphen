@@ -2,7 +2,6 @@
 %include "typemaps.i"
 
 %typemap(in)     (char * BYTE, int LENGTH) {
-/* Functions from jni.h */
 $1 = (char *) JCALL2(GetByteArrayElements, jenv, $input, 0);
 $2 = (int)    JCALL1(GetArrayLength,       jenv, $input);
 }
@@ -13,6 +12,9 @@ $2 = (int)    JCALL1(GetArrayLength,       jenv, $input);
 
 %apply (char * BYTE, int LENGTH) { (const char word[], int len) };
 %apply int * OUTPUT { int* hyphens };
+
+//This adds a free() statement in jhyphen_wrap, but it doesn't fix the memory leak
+//%newobject getHyphens;
 
 %{
 #include <hyphen.h>

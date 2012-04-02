@@ -5,44 +5,33 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#define MAX_WORD 512
 #define BUFSIZE 1000
 
-// TODO: check for memory leaks
-// word should be in lower case and can not have trailing (or leading?) periods
+static char* hyphens[BUFSIZE];
+
+// word should be in lower case (really?) and can not have trailing (or leading?) periods
 char* getHyphens(HyphenDict* dict, const char word[], int len) {
 
-    char* lcword;
-    char* hyphens;
-    char* hyphword;
-    int i;
-    int j;
-    char** rep;
-    int* pos;
-    int* cut;
+    // TODO dynamically allocate memory
+    //  (currently this causes memory leak, even though free() is called in jhyphen_wrap)
+    //char* hyphens = (char*)malloc(len * sizeof(char));
+    char** rep = NULL;
+    int* pos = NULL;
+    int* cut = NULL;
 
-    hyphens = (char*)malloc(len * sizeof(char));
-    hyphword = (char*)malloc(2 * len * sizeof(char));
-    
-    rep = NULL;
-    pos = NULL;
-    cut = NULL;
-    hyphword[0] = '\0';
-
-    hnj_hyphen_hyphenate2(dict, word, len, hyphens, hyphword, &rep, &pos, &cut);
-
-    free(hyphword);
+    hnj_hyphen_hyphenate2(dict, word, len, hyphens, NULL, &rep, &pos, &cut);
 
     // TODO: if (rep[i]): hyphenation mark at hyphens[i] is not valid because replacements have to be done 
-
-    if (rep) {
-        for (i = 0; i < len; i++) {
-          if (rep[i]) free(rep[i]);
-        }
-        free(rep);
-        free(pos);
-        free(cut);
-    }
+    // int i;
+    // int j;
+    // if (rep) {
+    //     for (i = 0; i < len; i++) {
+    //         if (rep[i]) free(rep[i]);
+    //     }
+    //     free(rep);
+    //     free(pos);
+    //     free(cut);
+    // }
 
     return hyphens;
 
