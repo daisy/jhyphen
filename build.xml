@@ -12,14 +12,17 @@
 
     </target>
 
-    <target name="jar" description="Build jar" depends="clean">
+    <target name="compile">
+      <mkdir dir="build"/>
+      
+      <javac srcdir="java" destdir="build" includeantruntime="false"
+	     debug="true" encoding="UTF-8" source="1.6" target="1.6"/>
+    </target>
+
+    <target name="jar" description="Build jar" depends="compile">
        
-    	<mkdir dir="build"/>
     	<mkdir dir="dist"/>
 
-        <javac srcdir="java" destdir="build" includeantruntime="false"
-               debug="true" encoding="UTF-8" source="1.6" target="1.6"/>
-        
         <copy todir="build">
             <fileset dir="java">
                 <patternset>
