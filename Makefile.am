@@ -16,7 +16,7 @@ CLEANFILES = jhyphen_wrap.c
 
 .PHONY : jar
 jar:
-	ant -f ${srcdir}/build.xml -Dbasedir=$(builddir)
+	ant -f ${srcdir}/build.xml -Dbasedir=$(builddir) -Dversion=$(VERSION)
 
 clean-local:
 	ant -f ${srcdir}/build.xml -Dbasedir=$(builddir) clean
