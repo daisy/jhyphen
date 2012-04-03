@@ -14,7 +14,8 @@ jhyphen_wrap.c: jhyphen.i jhyphen.c
 
 CLEANFILES = jhyphen_wrap.c
 
-all-local:
+.PHONY : jar
+jar:
 	ant -f ${srcdir}/build.xml -Dbasedir=$(builddir)
 
 clean-local:
