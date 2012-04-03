@@ -1,6 +1,6 @@
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_INIT([jhyphen], [0.1], [bert.frees@sbs.org])
+AC_INIT([jhyphen], [0.2], [bert.frees@sbs.org])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_CC
 AC_CONFIG_HEADERS([config.h])
