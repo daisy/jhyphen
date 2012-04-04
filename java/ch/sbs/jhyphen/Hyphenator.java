@@ -82,13 +82,20 @@ public class Hyphenator {
 	public Hyphenator(String locale)
 			throws IOException, UnsupportedCharsetException {
 		
-		File dictionaryFile = null;
 		String dictionaryPath = dictionaryPaths.getProperty(locale);
-		if (dictionaryPath != null) {
-			dictionaryFile = new File(dictionaryPath);
+		if (dictionaryPath == null && locale.contains("-")) {
+			dictionaryPath = dictionaryPaths.getProperty(locale.substring(0, locale.indexOf("-")));
 		}
-		if (dictionaryFile == null || !dictionaryFile.exists()) {
+		if (dictionaryPath == null && locale.contains("_")) {
+			dictionaryPath = dictionaryPaths.getProperty(locale.substring(0, locale.indexOf("_")));
+		}
+		if (dictionaryPath == null) {
 			throw new FileNotFoundException("No dictionary file found for locale " + locale);
+		}
+		File dictionaryFile = new File(dictionaryPath);
+		if (!dictionaryFile.exists()) {
+			throw new FileNotFoundException("Dictionary file at " + 
+					dictionaryFile.getAbsolutePath() + " doesn't exist.");
 		}
 		charset = getCharset(dictionaryFile);
 		dictionary = JHyphen.hnj_hyphen_load(dictionaryFile.getAbsolutePath());
@@ -123,8 +130,8 @@ public class Hyphenator {
 	 * 		A hyphen at index i corresponds to characters i and i+1 of the string.
 	 */
 	public boolean[] hyphenate(String text) {
-		
-		//TODO what if word already contains hard of soft hyphens?
+
+		//TODO what if word already contains soft hyphens?
 		
 		Matcher matcher = Pattern.compile("\\p{L}+").matcher(text);
 		
