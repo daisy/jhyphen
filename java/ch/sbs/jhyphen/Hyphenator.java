@@ -166,6 +166,13 @@ public class Hyphenator {
 		for(char c = iter.first(); c != CharacterIterator.DONE; c = iter.next()) {
 			hyphens[i++] = (c & 1) > 0;
 		}
+		
+		// Add hyphen points after hard hyphens (= "-" followed and preceded by a letter)
+		matcher = Pattern.compile("\\p{L}-\\p{L}").matcher(text);
+		while (matcher.find()) {
+			hyphens[matcher.start()+1] = true;
+		}
+		
 		return hyphens;
 	}
 	
