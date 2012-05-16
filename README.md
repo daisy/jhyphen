@@ -1,14 +1,12 @@
 [jhyphen][]
 ===========
 
-jhyphen provides minimal Java bindings to the [hyphenation library from hunspell][hunspell]. 
-
-The bindings are based on [SWIG][], so in theory it should be easy to use them to generate bindings for [Ruby][], [Clisp][] or any of the [languages that SWIG supports][supported languages].
-
+jhyphen provides minimal Java bindings to Hyphen, the [hyphenation library from hunspell][hunspell]. The bindings are based on [JNA][].
 Installation
 ------------
 
-The usual `./configure && make && make install` will install a shared lib and will produce a jar which you can include in your Java projects.
+`ant test` will perform unit tests.
+`ant jar` will create a dist directory that contains jhyphen.jar and the dependency jna.jar.
 
 Authors
 -------
@@ -25,9 +23,6 @@ Licensed under GNU Lesser General Public License as published by the Free Softwa
 
 [jhyphen]: http://github.com/sbsdev/jhyphen
 [hunspell]: http://hunspell.sourceforge.net/
-[swig]: http://www.swig.org/
-[ruby]: http://www.ruby-lang.org/en/
-[clisp]: http://www.clisp.org/
-[supported languages]: http://www.swig.org/compat.html#SupportedLanguages
+[jna]: https://github.com/twall/jna
 [sbs]: http://www.sbs.ch
 [lgpl]: http://www.gnu.org/licenses/lgpl.html
