@@ -1,13 +1,12 @@
 package ch.sbs.jhyphen;
 
-import ch.sbs.jhyphen.swig.*;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.CharacterIterator;
@@ -23,7 +22,9 @@ import java.util.regex.Pattern;
  * @author Bert Frees
  */
 public class Hyphenator {
-
+	
+	private final static HyphenLibrary libhyphen = HyphenLibrary.INSTANCE;
+	
 	/**
 	 * Maps locales to dictionary files
 	 */
@@ -35,7 +36,6 @@ public class Hyphenator {
 	private final static Map<File,Charset> charsets = new HashMap<File,Charset>();
 	
 	static {
-		System.loadLibrary("jhyphen");
 		try {
 			InputStream stream = ClassLoader.getSystemResourceAsStream("ch/sbs/jhyphen/dictionaries.properties");
 	        if (stream != null) {	        	
@@ -45,10 +45,11 @@ public class Hyphenator {
 		} catch (IOException e) {
 		}
 	}
+	
     /**
      * The hyphenation dictionary
      */
-	private final SWIGTYPE_p_HyphenDict dictionary;
+	private final HyphenDict dictionary;
 	
 	/**
 	 * The encoding of the hyphenation dictionary, e.g. ISO-8859-1 for German
@@ -59,28 +60,26 @@ public class Hyphenator {
 	 * Default constructor
 	 * @param dictPath The path to the hyphenation dictionary file,
 	 * 		e.g. /usr/share/hyphen/hyph_de_DE.dic
-	 * @throws IOException when the dictionary file is not found.
-	 * @throws UnsupportedCharsetException
+	 * @throws FileNotFoundException if the dictionary file cannot be found.
+	 * @throws UnsupportedCharsetException if the encoding of the file is not supported.
 	 */
-	public Hyphenator(File dictionaryFile)
-			throws IOException, UnsupportedCharsetException {
+	public Hyphenator(File dictionaryFile) throws UnsupportedCharsetException, FileNotFoundException {
 		
 		if (!dictionaryFile.exists()) {
 			throw new FileNotFoundException("Dictionary file at " + 
 					dictionaryFile.getAbsolutePath() + " doesn't exist.");
 		}
 		charset = getCharset(dictionaryFile);
-		dictionary = JHyphen.hnj_hyphen_load(dictionaryFile.getAbsolutePath());
+		dictionary = libhyphen.hnj_hyphen_load(dictionaryFile.getAbsolutePath());
 	}
 	
 	/**
 	 * Constructor which looks up the correct dictionary file based on the given locale
 	 * @param locale The locale
-	 * @throws IOException when no dictionary file found for the locale.
-	 * @throws UnsupportedCharsetException
+	 * @throws FileNotFoundException if no dictionary file can be found for the locale.
+	 * @throws UnsupportedCharsetException if the encoding of the file is not supported.
 	 */
-	public Hyphenator(String locale)
-			throws IOException, UnsupportedCharsetException {
+	public Hyphenator(String locale) throws UnsupportedCharsetException, FileNotFoundException {
 		
 		String dictionaryPath = dictionaryPaths.getProperty(locale);
 		if (dictionaryPath == null && locale.contains("-")) {
@@ -98,7 +97,7 @@ public class Hyphenator {
 					dictionaryFile.getAbsolutePath() + " doesn't exist.");
 		}
 		charset = getCharset(dictionaryFile);
-		dictionary = JHyphen.hnj_hyphen_load(dictionaryFile.getAbsolutePath());
+		dictionary = libhyphen.hnj_hyphen_load(dictionaryFile.getAbsolutePath());
 	}
 
 	/**
@@ -106,7 +105,7 @@ public class Hyphenator {
 	 * The given hyphen is inserted at all possible hyphenation points.
 	 * @param text The string to be hyphenated
 	 * @param hyphen The character to be used as hyphenation mark
-	 * @return
+	 * @return The hyphenated string
 	 */
 	public String hyphenate(String text, char hyphen) {
 		boolean[] hyphens = hyphenate(text);
@@ -130,7 +129,7 @@ public class Hyphenator {
 	 * 		A hyphen at index i corresponds to characters i and i+1 of the string.
 	 */
 	public boolean[] hyphenate(String text) {
-
+		
 		//TODO what if word already contains soft hyphens?
 		
 		Matcher matcher = Pattern.compile("\\p{L}+").matcher(text);
@@ -145,11 +144,15 @@ public class Hyphenator {
 				hyphenBuffer.append('0');
 			}
 			String word = text.substring(start, end);
-			String wordHyphens = JHyphen.getHyphens(dictionary, encode(word));
+			byte[] wordBytes = encode(word);
+			int wordSize = wordBytes.length;
+			ByteBuffer wordHyphens = ByteBuffer.allocate(wordSize);
+			
+			libhyphen.hnj_hyphen_hyphenate(dictionary.getPointer(), wordBytes, wordSize, wordHyphens);
 			
 			// TODO assert that last element of wordHyphens is not a hyphen
 
-			hyphenBuffer.append(wordHyphens.substring(0, word.length()));
+			hyphenBuffer.append(new String(wordHyphens.array(), 0, word.length()));
 			pos = end;
 		}
 		
@@ -167,7 +170,7 @@ public class Hyphenator {
 			hyphens[i++] = (c & 1) > 0;
 		}
 		
-		// Add hyphen points after hard hyphens (= "-" followed and preceded by a letter)
+		// Add hyphen points after hard hyphens ("-" followed and preceded by a letter)
 		matcher = Pattern.compile("\\p{L}-\\p{L}").matcher(text);
 		while (matcher.find()) {
 			hyphens[matcher.start()+1] = true;
@@ -180,7 +183,7 @@ public class Hyphenator {
 	 * Free memory
 	 */
 	public void close() {
-		JHyphen.hnj_hyphen_free(dictionary);
+		libhyphen.hnj_hyphen_free(dictionary.getPointer());
 	}
 	
 	/**
@@ -197,11 +200,11 @@ public class Hyphenator {
 	 * Reads the first line of the dictionary file which is the encoding
 	 * @param dictionaryFile The dictionary file
 	 * @return The encoding
-	 * @throws FileNotFoundException
-	 * @throws UnsupportedCharsetException
+	 * @throws FileNotFoundException if the dictionary file cannot be found.
+	 * @throws UnsupportedCharsetException if the encoding of the file is not supported.
 	 */
 	private static Charset getCharset(File dictionaryFile)
-			throws UnsupportedCharsetException, IOException {
+			throws UnsupportedCharsetException, FileNotFoundException {
 		
 		Charset cs = charsets.get(dictionaryFile);
 		if (cs == null) {
@@ -212,9 +215,15 @@ public class Hyphenator {
                 charsetName = charsetName.replaceAll("\\s+", "");
     			cs = Charset.forName(charsetName);
     			charsets.put(dictionaryFile, cs);
+			} catch (IOException e) {
+				throw new RuntimeException("Could not read first line of file");
 			} finally {
 	            if (reader != null) {
-	            	reader.close();
+	            	try {
+						reader.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 	            }
             }
 		}
