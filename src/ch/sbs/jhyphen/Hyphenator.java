@@ -25,6 +25,9 @@ public class Hyphenator {
 	
 	private final static HyphenLibrary libhyphen = HyphenLibrary.INSTANCE;
 	
+	// Don't allocate new memory for each word
+	private static ByteBuffer wordHyphens = ByteBuffer.allocate(50);
+	
 	/**
 	 * Maps locales to dictionary files
 	 */
@@ -146,7 +149,9 @@ public class Hyphenator {
 			String word = text.substring(start, end);
 			byte[] wordBytes = encode(word);
 			int wordSize = wordBytes.length;
-			ByteBuffer wordHyphens = ByteBuffer.allocate(wordSize);
+			if (wordSize > wordHyphens.capacity()) {
+				wordHyphens = ByteBuffer.allocate(wordSize * 2);
+			}
 			
 			libhyphen.hnj_hyphen_hyphenate(dictionary.getPointer(), wordBytes, wordSize, wordHyphens);
 			
