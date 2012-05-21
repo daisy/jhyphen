@@ -17,6 +17,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sun.jna.Pointer;
+
 /**
  * The primary API entry point
  * @author Bert Frees
@@ -52,7 +54,7 @@ public class Hyphenator {
     /**
      * The hyphenation dictionary
      */
-	private final HyphenDict dictionary;
+	private final Pointer dictionary;
 	
 	/**
 	 * The encoding of the hyphenation dictionary, e.g. ISO-8859-1 for German
@@ -153,7 +155,7 @@ public class Hyphenator {
 				wordHyphens = ByteBuffer.allocate(wordSize * 2);
 			}
 			
-			libhyphen.hnj_hyphen_hyphenate(dictionary.getPointer(), wordBytes, wordSize, wordHyphens);
+			libhyphen.hnj_hyphen_hyphenate(dictionary, wordBytes, wordSize, wordHyphens);
 			
 			// TODO assert that last element of wordHyphens is not a hyphen
 
@@ -188,7 +190,7 @@ public class Hyphenator {
 	 * Free memory
 	 */
 	public void close() {
-		libhyphen.hnj_hyphen_free(dictionary.getPointer());
+		libhyphen.hnj_hyphen_free(dictionary);
 	}
 	
 	/**

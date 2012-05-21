@@ -14,13 +14,22 @@ public interface HyphenLibrary extends Library {
 			NativeLibrary.getInstance(HyphenLibrary.JNA_LIBRARY_NAME);
 	public static final HyphenLibrary INSTANCE =
 			(HyphenLibrary)Native.loadLibrary(HyphenLibrary.JNA_LIBRARY_NAME, HyphenLibrary.class);
-
+	
 	/**
 	 * Load a hyphenation dictionary
+	 * 
 	 * @param fn The path to the hyphenation dictionary
-	 * @return The HyphenDict
+	 * @return Pointer to the HyphenDict
 	 */
-	HyphenDict hnj_hyphen_load(String fn);
+	Pointer hnj_hyphen_load(String fn);
+	
+	/*
+	 * Reading full HyphenDict struct causes crash on production server!
+	 * 
+	 * @param fn The path to the hyphenation dictionary
+	 * @return The HyphenDict object
+	 *
+	HyphenDict hnj_hyphen_load(String fn); */
 
 	/**
 	 * Free memory
@@ -30,6 +39,7 @@ public interface HyphenLibrary extends Library {
 	
 	/**
 	 * Standard hyphenation
+	 * 
 	 * @param dict A pointer to a HyphenDict object
 	 *             Before using this function, a call to write() should be done when the HyphenDict has changed.
 	 * @param word A byte array, which is the result of encoding the unhyphenated word.
