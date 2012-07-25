@@ -149,6 +149,8 @@ public class Hyphenator {
 				hyphenBuffer.append('0');
 			}
 			String word = text.substring(start, end);
+			// libhyphen requires that word is lowercase
+			word = word.toLowerCase();
 			byte[] wordBytes = encode(word);
 			int wordSize = wordBytes.length;
 			if (wordSize > wordHyphens.capacity()) {
