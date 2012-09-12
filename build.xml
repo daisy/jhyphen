@@ -3,7 +3,7 @@
 
     <description>Java bindings for the 'libhyphen' hyphenation library</description>
     
-    <property name="jhyphen.version" value="0.1.1" />
+    <property name="jhyphen.version" value="0.1.3" />
     <property name="jhyphen.jar" value="jhyphen-${jhyphen.version}.jar" />
     <property name="jna.jar" value="jna.jar" />
     <property name="junit.jar" value="junit-4.8.2.jar" />

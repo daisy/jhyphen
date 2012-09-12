@@ -179,8 +179,8 @@ public class Hyphenator {
 			hyphens[i++] = (c & 1) > 0;
 		}
 		
-		// Add hyphen points after hard hyphens ("-" followed and preceded by a letter)
-		matcher = Pattern.compile("\\p{L}-\\p{L}").matcher(text);
+		// Add hyphen points after hard hyphens ("-" followed and preceded by a letter or number)
+		matcher = Pattern.compile("[\\p{L}\\p{N}]-(?=[\\p{L}\\p{N}])").matcher(text);
 		while (matcher.find()) {
 			hyphens[matcher.start()+1] = true;
 		}

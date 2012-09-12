@@ -31,10 +31,19 @@ public class JHyphenTest {
 		
 		Hyphenator hyphenator = new Hyphenator("de");
 		
-		String unhyphenatedWord = "bla-bla, bla-, bla-1, -bla";
-		String hyphenatedWord = "bla-=bla, bla-, bla-1, -bla";
+		Map<String,String> words = new HashMap<String,String>();
 		
-		assertEquals(hyphenatedWord, hyphenator.hyphenate(unhyphenatedWord, '='));
+		words.put("bla-bla", "bla-=bla");
+		words.put("bla-", "bla-");
+		words.put("-bla", "-bla");
+		words.put(":-)", ":-)");
+		words.put("3-jährig", "3-=jäh=rig");
+		words.put("3-für-2-Aktion", "3-=für-=2-=Ak=ti=on");
+		words.put("von 14-16 Uhr", "von 14-=16 Uhr");
+		
+		for (Entry<String,String> entry : words.entrySet()) {
+			assertEquals(entry.getValue(), hyphenator.hyphenate(entry.getKey(), '='));
+		}
 		
 		hyphenator.close();
 		
