@@ -5,8 +5,8 @@ jhyphen provides minimal Java bindings to Hyphen, the [hyphenation library from 
 Installation
 ------------
 
-`ant test` will perform unit tests.
-`ant jar` will create a dist directory that contains jhyphen.jar and the dependency jna.jar.
+`mvn test` will perform unit tests.
+`mvn package` will create jhyphen.jar.
 
 Authors
 -------
