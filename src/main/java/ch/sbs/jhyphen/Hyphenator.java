@@ -25,8 +25,6 @@ import com.sun.jna.Pointer;
  */
 public class Hyphenator {
 	
-	private final static HyphenLibrary libhyphen = HyphenLibrary.INSTANCE;
-	
 	// Don't allocate new memory for each word
 	private static ByteBuffer wordHyphens = ByteBuffer.allocate(50);
 	
@@ -43,17 +41,17 @@ public class Hyphenator {
 	static {
 		try {
 			InputStream stream = ClassLoader.getSystemResourceAsStream("ch/sbs/jhyphen/dictionaries.properties");
-	        if (stream != null) {	        	
-	        	dictionaryPaths.load(stream);
-		        stream.close();
-	        }
+			if (stream != null) {
+				dictionaryPaths.load(stream);
+				stream.close();
+			}
 		} catch (IOException e) {
 		}
 	}
 	
-    /**
-     * The hyphenation dictionary
-     */
+	/**
+	 * The hyphenation dictionary
+	 */
 	private final Pointer dictionary;
 	
 	/**
@@ -75,7 +73,7 @@ public class Hyphenator {
 					dictionaryFile.getAbsolutePath() + " doesn't exist.");
 		}
 		charset = getCharset(dictionaryFile);
-		dictionary = libhyphen.hnj_hyphen_load(dictionaryFile.getAbsolutePath());
+		dictionary = Hyphen.getLibrary().hnj_hyphen_load(dictionaryFile.getAbsolutePath());
 	}
 	
 	/**
@@ -102,9 +100,9 @@ public class Hyphenator {
 					dictionaryFile.getAbsolutePath() + " doesn't exist.");
 		}
 		charset = getCharset(dictionaryFile);
-		dictionary = libhyphen.hnj_hyphen_load(dictionaryFile.getAbsolutePath());
+		dictionary = Hyphen.getLibrary().hnj_hyphen_load(dictionaryFile.getAbsolutePath());
 	}
-
+	
 	/**
 	 * Returns the fully hyphenated string.
 	 * The given hyphen is inserted at all possible hyphenation points.
@@ -157,10 +155,10 @@ public class Hyphenator {
 				wordHyphens = ByteBuffer.allocate(wordSize * 2);
 			}
 			
-			libhyphen.hnj_hyphen_hyphenate(dictionary, wordBytes, wordSize, wordHyphens);
+			Hyphen.getLibrary().hnj_hyphen_hyphenate(dictionary, wordBytes, wordSize, wordHyphens);
 			
 			// TODO assert that last element of wordHyphens is not a hyphen
-
+			
 			hyphenBuffer.append(new String(wordHyphens.array(), 0, word.length()));
 			pos = end;
 		}
@@ -169,7 +167,7 @@ public class Hyphenator {
 			hyphenBuffer.append('0');
 			pos++;
 		}
-
+		
 		hyphenBuffer.deleteCharAt(pos-1);
 		
 		boolean[] hyphens = new boolean[hyphenBuffer.length()];		
@@ -192,7 +190,7 @@ public class Hyphenator {
 	 * Free memory
 	 */
 	public void close() {
-		libhyphen.hnj_hyphen_free(dictionary);
+		Hyphen.getLibrary().hnj_hyphen_free(dictionary);
 	}
 	
 	/**
@@ -204,7 +202,7 @@ public class Hyphenator {
 	private byte[] encode(String str) {
 		return charset.encode(str).array();
 	}
-
+	
 	/**
 	 * Reads the first line of the dictionary file which is the encoding
 	 * @param dictionaryFile The dictionary file
@@ -220,21 +218,21 @@ public class Hyphenator {
 			BufferedReader reader = null;
 			try {
 				reader = new BufferedReader(new FileReader(dictionaryFile));
-            	String charsetName = reader.readLine();
-                charsetName = charsetName.replaceAll("\\s+", "");
-    			cs = Charset.forName(charsetName);
-    			charsets.put(dictionaryFile, cs);
+				String charsetName = reader.readLine();
+				charsetName = charsetName.replaceAll("\\s+", "");
+				cs = Charset.forName(charsetName);
+				charsets.put(dictionaryFile, cs);
 			} catch (IOException e) {
 				throw new RuntimeException("Could not read first line of file");
 			} finally {
-	            if (reader != null) {
-	            	try {
+				if (reader != null) {
+					try {
 						reader.close();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-	            }
-            }
+				}
+			}
 		}
 		return cs;
 	}
