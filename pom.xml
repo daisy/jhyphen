@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ch.sbs</groupId>
   <artifactId>jhyphen</artifactId>
-  <version>0.1.4-SNAPSHOT</version>
+  <version>0.1.5-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>jhyphen</name>
   <description>Java bindings for the 'libhyphen' hyphenation library</description>

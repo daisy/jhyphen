@@ -25,6 +25,9 @@ import com.sun.jna.Pointer;
  */
 public class Hyphenator {
 	
+	public static final byte SHY = 1;
+	public static final byte ZWSP = 2;
+	
 	// Don't allocate new memory for each word
 	private static ByteBuffer wordHyphens = ByteBuffer.allocate(50);
 	
@@ -62,14 +65,14 @@ public class Hyphenator {
 	/**
 	 * Default constructor
 	 * @param dictPath The path to the hyphenation dictionary file,
-	 * 		e.g. /usr/share/hyphen/hyph_de_DE.dic
+	 *        e.g. /usr/share/hyphen/hyph_de_DE.dic
 	 * @throws FileNotFoundException if the dictionary file cannot be found.
 	 * @throws UnsupportedCharsetException if the encoding of the file is not supported.
 	 */
 	public Hyphenator(File dictionaryFile) throws UnsupportedCharsetException, FileNotFoundException {
 		
 		if (!dictionaryFile.exists()) {
-			throw new FileNotFoundException("Dictionary file at " + 
+			throw new FileNotFoundException("Dictionary file at " +
 					dictionaryFile.getAbsolutePath() + " doesn't exist.");
 		}
 		charset = getCharset(dictionaryFile);
@@ -107,17 +110,22 @@ public class Hyphenator {
 	 * Returns the fully hyphenated string.
 	 * The given hyphen is inserted at all possible hyphenation points.
 	 * @param text The string to be hyphenated
-	 * @param hyphen The character to be used as hyphenation mark
+	 * @param shy The character to be used as soft hyphen.
+	 * @param zwsp The character to be used as zero-width space.
 	 * @return The hyphenated string
 	 */
-	public String hyphenate(String text, char hyphen) {
-		boolean[] hyphens = hyphenate(text);
+	public String hyphenate(String text, Character shy, Character zwsp) {
+		if (shy == null && zwsp == null)
+			return text;
+		byte[] hyphens = hyphenate(text);
 		StringBuffer hyphenatedText = new StringBuffer();
 		int i;
 		for (i=0; i<hyphens.length; i++) {
 			hyphenatedText.append(text.charAt(i));
-			if (hyphens[i]) {
-				hyphenatedText.append(hyphen);
+			if (shy != null && hyphens[i] == SHY) {
+				hyphenatedText.append(shy);
+			} else if (zwsp != null && hyphens[i] == ZWSP) {
+				hyphenatedText.append(zwsp);
 			}
 		}
 		hyphenatedText.append(text.charAt(i));
@@ -127,11 +135,13 @@ public class Hyphenator {
 	/**
 	 * Returns all possible hyphenation points of a string
 	 * @param text The string to be hyphenated
-	 * @return An array of booleans which represents the hyphenation points.
-	 * 		The length of the hyphen array is the length of the input string minus 1.
-	 * 		A hyphen at index i corresponds to characters i and i+1 of the string.
+	 * @return A byte array which represents the hyphenation points.
+	 *         The length of the hyphen array is the length of the input string minus 1.
+	 *         A hyphen at index i corresponds to characters i and i+1 of the string.
+	 *         Possible values are `0` for no hyphenation point, `1` for a hyphenation point
+	 *         (soft hyphen), or `2` for a zero-width space (which are inserted after hard hyphens).
 	 */
-	public boolean[] hyphenate(String text) {
+	public byte[] hyphenate(String text) {
 		
 		//TODO what if word already contains soft hyphens?
 		
@@ -170,17 +180,17 @@ public class Hyphenator {
 		
 		hyphenBuffer.deleteCharAt(pos-1);
 		
-		boolean[] hyphens = new boolean[hyphenBuffer.length()];		
-		CharacterIterator iter = new StringCharacterIterator(hyphenBuffer.toString());		
+		byte[] hyphens = new byte[hyphenBuffer.length()];
+		CharacterIterator iter = new StringCharacterIterator(hyphenBuffer.toString());
 		int i = 0;
 		for(char c = iter.first(); c != CharacterIterator.DONE; c = iter.next()) {
-			hyphens[i++] = (c & 1) > 0;
+			hyphens[i++] = (c & 1) > 0 ? SHY : 0;
 		}
 		
-		// Add hyphen points after hard hyphens ("-" followed and preceded by a letter or number)
+		// add a zero-width space after hard hyphens ("-" followed and preceded by a letter or number)
 		matcher = Pattern.compile("[\\p{L}\\p{N}]-(?=[\\p{L}\\p{N}])").matcher(text);
 		while (matcher.find()) {
-			hyphens[matcher.start()+1] = true;
+			hyphens[matcher.start()+1] = ZWSP;
 		}
 		
 		return hyphens;

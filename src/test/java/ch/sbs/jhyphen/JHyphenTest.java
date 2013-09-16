@@ -31,7 +31,7 @@ public class JHyphenTest {
 		String unhyphenatedWord = "Dampfschiff, Zucker, Schiffahrt";
 		String hyphenatedWord = "Dampf=schiff, Zu=cker, Schif=fahrt";
 		
-		assertEquals(hyphenatedWord, hyphenator.hyphenate(unhyphenatedWord, '='));
+		assertEquals(hyphenatedWord, hyphenator.hyphenate(unhyphenatedWord, '=', '='));
 		
 		hyphenator.close();
 		
@@ -53,7 +53,7 @@ public class JHyphenTest {
 		words.put("von 14-16 Uhr", "von 14-=16 Uhr");
 		
 		for (Entry<String,String> entry : words.entrySet()) {
-			assertEquals(entry.getValue(), hyphenator.hyphenate(entry.getKey(), '='));
+			assertEquals(entry.getValue(), hyphenator.hyphenate(entry.getKey(), '=', '='));
 		}
 		
 		hyphenator.close();
@@ -69,7 +69,7 @@ public class JHyphenTest {
 		words.put("angestarrt", "an=ge=starrt");
 		
 		for (Entry<String,String> entry : words.entrySet()) {
-			assertEquals(entry.getValue(), hyphenator.hyphenate(entry.getKey(), '='));
+			assertEquals(entry.getValue(), hyphenator.hyphenate(entry.getKey(), '=', '='));
 		}
 		
 		hyphenator.close();
@@ -85,7 +85,7 @@ public class JHyphenTest {
 		words.put("Schlampe", "Schlam=pe");
 		
 		for (Entry<String,String> entry : words.entrySet()) {
-			assertEquals(entry.getValue(), hyphenator.hyphenate(entry.getKey(), '='));
+			assertEquals(entry.getValue(), hyphenator.hyphenate(entry.getKey(), '=', '='));
 		}
 		
 		hyphenator.close();
@@ -113,8 +113,8 @@ public class JHyphenTest {
 		while (scanner.hasNext()) {
 			word = scanner.nextLine();
 			unhyphenated = word.replaceAll("\\-", "");
-			assertEquals(word, hyphenator.hyphenate(unhyphenated, '-'));
-			if(word.equals(origHyphenator.hyphenate(unhyphenated, '-')))
+			assertEquals(word, hyphenator.hyphenate(unhyphenated, '-', null));
+			if(word.equals(origHyphenator.hyphenate(unhyphenated, '-', null)))
 				redundantWords.add(unhyphenated);
 			i++;
 			if (i % 100 == 0)
