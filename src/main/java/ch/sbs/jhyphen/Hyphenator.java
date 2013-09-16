@@ -135,7 +135,7 @@ public class Hyphenator {
 		
 		//TODO what if word already contains soft hyphens?
 		
-		Matcher matcher = Pattern.compile("\\p{L}+").matcher(text);
+		Matcher matcher = Pattern.compile("['\\p{L}]+").matcher(text);
 		
 		StringBuffer hyphenBuffer = new StringBuffer();
 		
