@@ -9,8 +9,10 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -96,19 +98,33 @@ public class JHyphenTest {
 		
 		File whitelist = new File(projectHome, "whitelist_de_SBS.txt");
 		File dictionary = new File(projectHome, "hyph_de_DE.dic");
+		File origDictionary = new File(projectHome, "hyph_de_DE.orig.dic");
+		
 		Hyphenator hyphenator = new Hyphenator(dictionary);
+		Hyphenator origHyphenator = new Hyphenator(origDictionary);
+		
+		List<String> redundantWords = new ArrayList<String>();
 		
 		Scanner scanner = new Scanner(whitelist, "ISO8859-1");
 		long start = System.currentTimeMillis();
 		int i = 0;
+		String unhyphenated = null;
 		String word = null;
 		while (scanner.hasNext()) {
 			word = scanner.nextLine();
-			assertEquals(word, hyphenator.hyphenate(word.replaceAll("\\-", ""), '-'));
+			unhyphenated = word.replaceAll("\\-", "");
+			assertEquals(word, hyphenator.hyphenate(unhyphenated, '-'));
+			if(word.equals(origHyphenator.hyphenate(unhyphenated, '-')))
+				redundantWords.add(unhyphenated);
 			i++;
 			if (i % 100 == 0)
 				System.out.println(String.format("... tested %d words in %d milliseconds",
 						i, (int)(System.currentTimeMillis()-start))); }
+		
+		System.out.print("The following words are correctly hyphenated without whitelist:\n=> ");
+		for (String w : redundantWords)
+			System.out.print(w + " ");
+		System.out.println();
 		
 		hyphenator.close();
 	}
