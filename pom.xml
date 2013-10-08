@@ -82,7 +82,7 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>net.sf.hunspell</groupId>
+                  <groupId>org.daisy.libs</groupId>
                   <artifactId>hyphen</artifactId>
                   <classifier>${nar.aol}-shared</classifier>
                   <type>nar</type>
@@ -185,16 +185,4 @@
       <url>http://duns.github.com/maven-snapshots</url>
     </pluginRepository>
   </pluginRepositories>
-  <distributionManagement>
-    <repository>
-      <id>sonatype-nexus-staging</id>
-      <name>oss.sonatype.org Staging Repository</name>
-      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>oss.sonatype.org github Release Repository Snapshot Repository</name>
-      <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 </project>
