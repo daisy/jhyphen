@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
 
 /**
  * The primary API entry point
@@ -165,7 +166,13 @@ public class Hyphenator {
 				wordHyphens = ByteBuffer.allocate(wordSize * 2);
 			}
 			
-			Hyphen.getLibrary().hnj_hyphen_hyphenate(dictionary, wordBytes, wordSize, wordHyphens);
+			PointerByReference pointerToNullPointer = new PointerByReference(Pointer.NULL);
+			
+			Hyphen.getLibrary().hnj_hyphen_hyphenate2(dictionary, wordBytes, wordSize, wordHyphens,
+			                                          null,
+			                                          pointerToNullPointer,
+			                                          pointerToNullPointer,
+			                                          pointerToNullPointer);
 			
 			// TODO assert that last element of wordHyphens is not a hyphen
 			

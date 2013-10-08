@@ -65,7 +65,7 @@ public class Hyphen {
 		 * Non-standard hyphenation
 		 */
 		public int hnj_hyphen_hyphenate2(Pointer dict, byte[] word, int word_size, ByteBuffer hyphens,
-				ByteBuffer hyphenated_word, PointerByReference rep, PointerByReference pos,
+				byte[] hyphenated_word, PointerByReference rep, PointerByReference pos,
 				PointerByReference cut);
 		
 		public int hnj_hyphen_hyphenate3(Pointer dict, byte[] word, int word_size, ByteBuffer hyphens,
