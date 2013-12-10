@@ -10,17 +10,17 @@
     <version>2</version>
     <relativePath/>
   </parent>
-  <groupId>org.daisy</groupId>
+  <groupId>org.daisy.bindings</groupId>
   <artifactId>jhyphen</artifactId>
   <version>0.1.5-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <name>jhyphen</name>
   <description>Java bindings for the 'libhyphen' hyphenation library</description>
-  <url>https://github.com/sbsdev/jhyphen</url>
+  <url>https://github.com/daisy-consortium/jhyphen</url>
   <scm>
-    <connection>scm:git:git@github.com:sbsdev/jhyphen.git</connection>
-    <developerConnection>scm:git:git@github.com:sbsdev/jhyphen.git</developerConnection>
-    <url>git@github.com:sbsdev/jhyphen.git</url>
+    <connection>scm:git:git@github.com:daisy-consortium/jhyphen.git</connection>
+    <developerConnection>scm:git:git@github.com:daisy-consortium/jhyphen.git</developerConnection>
+    <url>git@github.com:daisy-consortium/jhyphen.git</url>
   </scm>
   <licenses>
     <license>
@@ -112,10 +112,6 @@
     </plugins>
   </build>
   <pluginRepositories>
-    <pluginRepository>
-      <id>bertfrees-github-snapshots</id>
-      <url>http://bertfrees.github.com/snapshots</url>
-    </pluginRepository>
     <pluginRepository>
       <id>duns-maven-snapshots</id>
       <url>http://duns.github.com/maven-snapshots</url>
