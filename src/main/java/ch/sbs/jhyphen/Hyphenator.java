@@ -1,11 +1,10 @@
 package ch.sbs.jhyphen;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
@@ -13,7 +12,6 @@ import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,25 +31,9 @@ public class Hyphenator {
 	private static ByteBuffer wordHyphens = ByteBuffer.allocate(50);
 	
 	/**
-	 * Maps locales to dictionary files
-	 */
-	private final static Properties dictionaryPaths = new Properties();
-	
-	/**
 	 * Maps dictionary files to charsets
 	 */
 	private final static Map<File,Charset> charsets = new HashMap<File,Charset>();
-	
-	static {
-		try {
-			InputStream stream = ClassLoader.getSystemResourceAsStream("ch/sbs/jhyphen/dictionaries.properties");
-			if (stream != null) {
-				dictionaryPaths.load(stream);
-				stream.close();
-			}
-		} catch (IOException e) {
-		}
-	}
 	
 	/**
 	 * The hyphenation dictionary
@@ -74,33 +56,6 @@ public class Hyphenator {
 		
 		if (!dictionaryFile.exists()) {
 			throw new FileNotFoundException("Dictionary file at " +
-					dictionaryFile.getAbsolutePath() + " doesn't exist.");
-		}
-		charset = getCharset(dictionaryFile);
-		dictionary = Hyphen.getLibrary().hnj_hyphen_load(dictionaryFile.getAbsolutePath());
-	}
-	
-	/**
-	 * Constructor which looks up the correct dictionary file based on the given locale
-	 * @param locale The locale
-	 * @throws FileNotFoundException if no dictionary file can be found for the locale.
-	 * @throws UnsupportedCharsetException if the encoding of the file is not supported.
-	 */
-	public Hyphenator(String locale) throws UnsupportedCharsetException, FileNotFoundException {
-		
-		String dictionaryPath = dictionaryPaths.getProperty(locale);
-		if (dictionaryPath == null && locale.contains("-")) {
-			dictionaryPath = dictionaryPaths.getProperty(locale.substring(0, locale.indexOf("-")));
-		}
-		if (dictionaryPath == null && locale.contains("_")) {
-			dictionaryPath = dictionaryPaths.getProperty(locale.substring(0, locale.indexOf("_")));
-		}
-		if (dictionaryPath == null) {
-			throw new FileNotFoundException("No dictionary file found for locale " + locale);
-		}
-		File dictionaryFile = new File(dictionaryPath);
-		if (!dictionaryFile.exists()) {
-			throw new FileNotFoundException("Dictionary file at " + 
 					dictionaryFile.getAbsolutePath() + " doesn't exist.");
 		}
 		charset = getCharset(dictionaryFile);
