@@ -238,7 +238,7 @@ public class Hyphenator {
 						Break b;
 						if (rep != null && rep[posInWord - 1] != null)
 							b = new NonStandardBreak(
-								text, wordStart + pos[posInWord - 1] - 1, cut[posInWord - 1], rep[posInWord - 1]);
+								text, wordStart + posInWord - pos[posInWord - 1], cut[posInWord - 1], rep[posInWord - 1]);
 						else
 							b = new StandardBreak(text, wordStart + posInWord);
 						if (b.getBreakPosition() > lineLength)

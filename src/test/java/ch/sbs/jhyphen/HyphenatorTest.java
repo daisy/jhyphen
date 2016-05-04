@@ -62,6 +62,7 @@ public class HyphenatorTest {
 		try {
 			assertEquals("fu=bar", hyphenator.hyphenate("foobar", 4, '=', '|'));
 			assertEquals("foo-|bar", hyphenator.hyphenate("foo-bar", 4, '=', '|'));
+			assertEquals("buss=stopp", hyphenator.hyphenate("busstopp", 6, '=', '|'));
 		} finally {
 			hyphenator.close();
 		}
