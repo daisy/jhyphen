@@ -34,7 +34,7 @@ Release procedure
 
   ```sh
   git push origin release/${VERSION}:release/${VERSION}
-  hub pull-request -b snaekobbi:master -h snaekobbi:release/${VERSION} -m "Release version ${VERSION}"
+  hub pull-request -b daisy:master -h daisy:release/${VERSION} -m "Release version ${VERSION}"
   ```
   
 - Stage the artifact on https://oss.sonatype.org and comment on pull request.
